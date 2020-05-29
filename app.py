@@ -439,20 +439,20 @@ Our primary focus has been on Earth observation (EO) data policy in the next
 U.S. administration &mdash; how to finance, collect, and activate remotely
 sensed information for climate policy.
 
-1. **Earth Observation for Sensible Climate Policy**.  We are contributing to
-the memos for the Biden transition team on Earth Observation through both the
-Center for American Pogress and the Day One Project. The memos describe
-day-one actions that the next Administration can take to increase the value of
-Earth observation to inform federal climate policy. 
+1. **Earth Observation for Sensible Climate Data Policy**. We are contributing
+to a number of policy development activities &mdash; including the Day One
+Project &mdash; focused on developing recommendations that could be utilized
+by a transition team to increase the value of Earth observation to inform
+federal climate policy. 
 
-2. **Center for Strategic and International Studies Workshops**.  We are
-assembling policy wonks, scientists, and data engineers at a workshop
-sponsored by CSIS to answer questions like, "*What data are required but
-currently unavailable to make a critical policy decision right now*?" We will
-invite Coalition members to participate.  The objective of the workshop that
-is most aligned with the Coalition's mission is to identify data and data
-products that are currently bottlenecks for sensible climate policy, both
-domestic and international.
+2. **Center for Strategic and International Studies Workshops**. We have
+engaged CSIS to inform these policy efforts and host two workshops where
+policy wonks, scientists, and data engineers can help answer questions like,
+"*What data are required but currently unavailable to make a critical policy
+decision right now?*" We will invite Coalition members to participate. The
+objective of the workshop that is most aligned with the Coalition's mission is
+to identify data and data products that are currently bottlenecks for sensible
+climate policy, both domestic and international.
 
 3. **Policy perspectives**.  Earth observation &mdash; the most basic data
 about our home planet &mdash; is not nearly as ubiquitous as it could and
