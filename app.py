@@ -74,7 +74,6 @@ trends.
 
 """)
 
-@st.cache(persist=True)
 def load_data(plot=True):
 
 	firedf = gpd.read_file('data/a000000af.gdbtable')
