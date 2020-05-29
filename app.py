@@ -5,6 +5,7 @@ import streamlit as st
 import matplotlib.pyplot as plt
 import geopandas as gpd
 import datetime
+import model
 
 st.header("Earthrise Report \\#1")
 
@@ -185,7 +186,9 @@ st.markdown("""
 
 This large dataset can be reformatted into a more comprehensible visualization
 &mdash; at least for quick-glance policymakers.  The interaction is important
-for both policymakers and reporters.
+for both policymakers and reporters.  Ultimately, for the Coalition, it is
+helpful to frame development in terms of the final data interactions that have
+demonstrated significant impact.
 
 """)
 
@@ -248,18 +251,149 @@ st.markdown("""
 Earthrise supported Tom Frieden's pandemic lead and Johns Hopkins
 epidemiologists with math &mdash; because that's the world we live in now. 
 This is relevant because [Covidtracker](https://www.covidtracker.com/) is the
-most widely used online data dashboards in human history.  Our work helps
-frame the requirements for 
+most widely used online data dashboards in human history.  Our recent
+experience in assisting high-profile scientists and policymakers has served as
+product discovery for data dashboards.
 
+We developed a model, code, and visualizations to support policymakers in
+understanding the impact of lifting restrictions like stay-at-home orders.  We
+are armchair epidemiologists &mdash; the worst kind.  However, our role was
+just to do the math and build the interactive widgets.  The model is detailed
+below, for posterity's sake.  It is an age-stratefied compartmental model, an
+extension on the standard SEIR model that is used by basically every other
+armchair epidmiologist &mdash; and most of the pros, too.
+
+Our multidimensional generalization of the SEIR compartmental model
+can be represented mathematically as follows:
+
+""")
+
+eqnarray = r"""
+	\begin{array}{lll}
+		\frac{dS_a}{dt} &=& - S_a\; \sum_b \beta c_{ab}(t) (I_b + M_b)/ N_b \\
+		\\
+		\frac{dE_a}{dt} &=& S_a\; \sum_b \beta c_{ab}(t) (I_b + M_b)/ N_b - \alpha E_a\\
+		\\
+		\frac{dI_a}{dt} &=& \alpha (1-\kappa_a) E_a - \gamma I_a\\
+		\\
+        \frac{dM_a}{dt} &=& \alpha \kappa_a E_a - \delta M_a\\
+        \\
+		\frac{dR_a}{dt} &=& \gamma I_a \\
+        \\
+        \frac{dD_a}{dt} &=& \delta M_a\\
+
+	\end{array}{}
+"""
+
+st.latex(eqnarray)
+
+import shapely.geometry
+
+START_DAY, END_DAY = 0, 300
+initial_infected = .001
+
+TOTAL_POPULATION = 1e6
+population = TOTAL_POPULATION * model.WORLD_POP["Americas"]
+pop_0 = np.array([[f * (1 - 2 * initial_infected), f * initial_infected,
+					   f * initial_infected, 0, 0, 0] for f in population])
+
+npi_intervals = {
+    'School closure':
+        st.slider('Schools closed', START_DAY, END_DAY, (30, 70)),
+    'Cancel mass gatherings':
+        st.slider('Cancellation of mass gatherings',
+                  START_DAY, END_DAY, (30, 80)),
+    'Shielding the elderly':
+        st.slider('Shielding the elderly',
+                  START_DAY, END_DAY, (30, 100)),
+    'Quarantine and tracing':
+        st.slider('Self-isolation, quarantine, and contact tracing',
+                  START_DAY, END_DAY, (70, 200))
+}
+
+shelter_interval = (20, 20)
+
+def _trim(interval, interval_to_excise):
+    l1 = shapely.geometry.LineString([[x,0] for x in interval])
+    l2 = shapely.geometry.LineString([[x,0] for x in interval_to_excise])
+    diff = l1.difference(l2)
+    if type(diff) == shapely.geometry.linestring.LineString:
+        coords = [int(x) for x,_ in diff.coords]
+        coords = [coords] if coords else []
+    elif type(diff) == shapely.geometry.multilinestring.MultiLineString:
+        coords = [[int(x) for x,_ in segment.coords] for segment in diff.geoms]
+    return coords
+
+selected_npis, intervals = [], []
+for k,v in npi_intervals.items():
+    coords = _trim(v, shelter_interval)
+    for c in coords:
+        selected_npis.append(k)
+        intervals.append(c)
+            
+selected_npis.append('Shelter in place')
+intervals.append(shelter_interval)
+
+contact_matrices, epoch_end_times = model.model_input(
+    model.CONTACT_MATRICES_0["Americas"],
+    intervals,
+	selected_npis,
+    END_DAY-START_DAY)
+
+res = model.SEIRModel(contact_matrices, epoch_end_times)
+
+df, y = res.solve_to_dataframe(pop_0.flatten(), detailed_output=True)
+infected = df[df["Group"] == "Infected"]
+
+chart = alt.Chart(infected).mark_line(
+	color="#e45756").encode(
+		x=alt.X('days', axis=alt.Axis(title='Days')),
+		y=alt.Y('pop', axis=alt.Axis(title=''),
+                scale=alt.Scale(domain=(0,TOTAL_POPULATION/10))))
+
+st.markdown('Infections (per million)' )
+
+st.altair_chart(chart, use_container_width=True)
+
+
+st.write("""
+
+The subscripts (a,b) index the (age) cohorts, while alpha, beta,
+gamma, and delta are the inverse incubation period, the probability of
+transmission given a contact between two people, the inverse duration
+of infection, and the inverse time to death, respectively. The matrix
+c_ab is the *contact matrix*, encoding the average number of daily
+contacts a person in cohort a has with people in cohort b. The vector
+kappa_a encodes the infection fatality rates for each cohort.
+
+Now, regarding the relevance to the Coalition.  Both policymakers and
+reporters needed a way to interact with complicated differential equations,
+without needing to understand the math.  They also needed the interactions to
+be customizable and embeddable.  The fact that we wrote these visualizations
+in Python, for example, held up publication in Reuters by weeks.  
+
+> *Any dashboard should be able to immediately have cards to embed in the
+sites of others.*
+
+The way we share data is changing.  A dashboard that just presents data in a
+map will go nowhere &mdash; or at least not nearly as far as one that caters
+to the users.
+
+""")  
+
+st.markdown("""
 
 **Interact with individual images**
+
 """)
 
 st.subheader("Policy")
 
 st.markdown("""
 
-Our primary focus has been on EO data policy in the next U.S. administration.
+Our primary focus has been on Earth observation (EO) data policy in the next
+U.S. administration &mdash; how to finance, collect, and activate remotely
+sensed information for climate policy.
 
 1. **Earth Observation for Sensible Climate Policy**.   CAP, Day One.
 
@@ -275,5 +409,56 @@ without pitting planetary science against EO.  Reframing the narrative.
 
 st.subheader("Design")
 
+st.markdown("""
 
+Earthrise is currently supporting the logo design and brand identity for the
+Coalition.  We will run a series of logo experiments on the final list of
+names, and submit the results to the coalition for review.
 
+""")
+
+image_num = st.slider(
+	'Concept Number',
+	1, 6, 3
+)
+
+st.image(
+	"%s.jpg" % image_num,
+	use_column_width=True
+)
+
+st.markdown("""
+
+The next phase includes the design of the user interface for the Coalition
+dashboard.  Early, *early* wireframes of the dashboard are below.  These are
+about as well-baked as the name "Theo" for the coalition &mdash; meant only to
+solicit more granular responses.  We will ultimately utilize the time of our
+pro graphic designers rather than UI/UX designers for the dashboard.
+
+The two most important features are:
+
+1. Embeddable widgets that are easily customized for a particular sector, time
+period, and geographic region.
+
+2. Sector-specific "slices" of the emissions data, starting with the big four
+or five.
+
+""")
+
+st.image(
+	"dashboard1.png",
+	use_column_width=True,
+	caption="Proposed landing page"
+)
+
+st.image(
+	"dashboard2.png",
+	use_column_width=True,
+	caption="Initial overview page"
+)
+
+st.image(
+	"dashboard3.png",
+	use_column_width=True,
+	caption="Sector-specific page"
+)

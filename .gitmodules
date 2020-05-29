@@ -1,0 +1,3 @@
+[submodule "covid-model"]
+	path = covid-model
+	url = git@github.com:earthrise-media/covid-model.git
