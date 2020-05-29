@@ -28,10 +28,12 @@ st.markdown("""
 Earthrise focuses on the policy, design, and data infrastructure of Earth
 observation for climate action.  You can't change what you can't measure.  Our
 role in the Coalition has been to support members with data, elevate the role
-of Earth observation in policymaking, and 
+of Earth observation in policymaking, and assist with the graphic and UI/UX
+design for Coalition products.
 
 This simple web app reports on progress to date *and* highlights the
-capabilities of Earthrise for Coalition members.
+capabilities of Earthrise that can or has already been made available to
+Coalition members.
 
 """)
 
@@ -49,6 +51,10 @@ environmental science and monitoring.  Some of the capabilities are
 illustrated below.
 
 **Time series extraction**
+
+> Create long-term time series of derived measures from space-based sensors
+&mdash; for both large geographic regions or small areas with high-resolution
+imagery.
 
 A common pattern for both point-source and landscape emissions monitoring is
 to extract a historical time-series of measurements from satellite-based
@@ -248,6 +254,9 @@ st.markdown("""
 
 **Tools for journalists**: Lessons from COVID modeling
 
+> Run complicated models in the browser, and create interactive and embeddable
+widgets for reporters.
+
 Earthrise supported Tom Frieden's pandemic lead and Johns Hopkins
 epidemiologists with math &mdash; because that's the world we live in now. 
 This is relevant because [Covidtracker](https://www.covidtracker.com/) is the
@@ -372,8 +381,8 @@ without needing to understand the math.  They also needed the interactions to
 be customizable and embeddable.  The fact that we wrote these visualizations
 in Python, for example, held up publication in Reuters by weeks.  
 
-> *Any dashboard should be able to immediately have cards to embed in the
-sites of others.*
+> *Any dashboard should offer cutomizable cards that are easily embedded in
+third-party websites or reports.*
 
 The way we share data is changing.  A dashboard that just presents data in a
 map will go nowhere &mdash; or at least not nearly as far as one that caters
@@ -395,15 +404,40 @@ Our primary focus has been on Earth observation (EO) data policy in the next
 U.S. administration &mdash; how to finance, collect, and activate remotely
 sensed information for climate policy.
 
-1. **Earth Observation for Sensible Climate Policy**.   CAP, Day One.
+1. **Earth Observation for Sensible Climate Policy**.  We are contributing to
+the memos for the Biden transition team on Earth Observation through both the
+Center for American Pogress and the Day One Project. The memos describe
+day-one actions that the next Administration can take to increase the value of
+Earth observation to inform federal climate policy. 
 
-2. **Center for Strategic Roundtable**.  Next step to invite members for the
-EO data infrastructure piece.
+2. **Center for Strategic and International Studies Workshops**.  We are
+assembling policy wonks, scientists, and data engineers at a workshop
+sponsored by CSIS to answer questions like, "*What data are required but
+currently unavailable to make a critical policy decision right now*?" We will
+invite Coalition members to participate.  The objective of the workshop that
+is most aligned with the Coalition's mission is to identify data and data
+products that are currently bottlenecks for sensible climate policy, both
+domestic and international.
 
-3. **Policy perspectives**.  Interviews that help show leadership in EO
-without pitting planetary science against EO.  Reframing the narrative.
+3. **Policy perspectives**.  Earth observation &mdash; the most basic data
+about our home planet &mdash; is not nearly as ubiquitous as it could and
+should be.  In fact, sometimes, it is unnecessarily positioned as competitive
+with other public science objectives.  Other times, it is just forgotten in
+areas of education, infrastructure planning, and other critical areas in both
+the public and private sector.  We are working on helping define a more
+productive narrative through popular press, including interviews with the New
+York Times, Netflix, Reuters, and many other high-profile outlets.
 
-4. 
+4. **Tracking existing sensors**. We are trying to maintain a canonical list
+of sensors that are useful to the Coalition's mission.  [This is on
+Notion](https://www.notion.so/climatei/787bd173c7fa4fe4ab78365d360ab343?v=774c90da8d2b48208b6feaf362e224c8).
+It is exciting to watch other members contribute to this list as a shared
+resource.
+
+The objectives for the Earthrise policy track are two-fold.  First, increase
+the support for meaningful data collection about our home planet.  Second,
+discover exactly what data policy makers urgently need to make better policy
+around climate change mitigation and adaptation.
 
 """)
 
@@ -462,3 +496,12 @@ st.image(
 	use_column_width=True,
 	caption="Sector-specific page"
 )
+
+
+st.markdown("""
+
+The high-fidelity designs will help to determine the final data format for
+member submissions, hopefully facilitating collaboration and the design and
+development of shared infrastructure.
+
+""")
