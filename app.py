@@ -6,6 +6,7 @@ import matplotlib.pyplot as plt
 import geopandas as gpd
 import datetime
 import model
+from PIL import Image
 
 st.header("Earthrise Report \\#1")
 
@@ -392,9 +393,43 @@ to the users.
 
 st.markdown("""
 
-**Interact with individual images**
+**Store and analyze commercial imagery**
+
+Earthrise is helping to build shared infrastructure to access, store, and
+analyze imagery from commercial imagery providers.  We still don't have a
+common license or common pool of imagery to pull from, but we are creating
+cloud-optimized GeoTIFFs (COGs) and organizing them in a Spatio Temporal Asset
+Catalog (STAC) to prove the value as a club good.  
+
+[`stac.earthrise.media`](https://stac.earthrise.media)
+
+Once organized, it is trivial to analyze the data.  The following image shows
+how to start to interact with some of that imagery, but instead using a
+derived data product at 250m for the Hudson Valley &mdash; Nitrogen content in
+the soil at a depth of 0-30cm.
 
 """)
+
+image = np.array(Image.open('data/nitrogen.tif')).astype('float')
+vals = np.array(image).ravel()
+minimage, maximage = [int(min(vals)), int(max(vals))]
+
+delta = int(maximage - minimage)
+
+viz_window = st.slider(
+	'Values to show (cg/kg, 0-30cm)',
+	minimage, maximage, (int(0.2 * delta) + 4, int(0.8 * delta))
+)
+
+minval, maxval = viz_window
+image[(image < minval) | (image > maxval)] = np.nan
+
+fig, ax = plt.subplots(1, 1)
+ax.matshow(image, cmap="twilight_shifted")
+ax.axis('off')
+ax.axes.yaxis.set_visible(False)
+
+st.pyplot()
 
 st.subheader("Policy")
 
