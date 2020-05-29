@@ -74,13 +74,16 @@ trends.
 
 """)
 
+
+# firedf = gpd.read_file('data/a000000af.gdbtable')
+# firedf = firedf[(firedf.YEAR_.notna()) & (firedf.YEAR_ != '')]
+# firedf['YEAR'] = gpd.pd.to_numeric(firedf.YEAR_)
+# firedf[["YEAR", 'GIS_ACRES', "CAUSE"]].to_pickle("data/firedata.pkl")
+
+@st.cache
 def load_data(plot=True):
-
-	firedf = gpd.read_file('data/a000000af.gdbtable')
-	firedf = firedf[(firedf.YEAR_.notna()) & (firedf.YEAR_ != '')]
-	firedf['YEAR'] = gpd.pd.to_numeric(firedf.YEAR_)
-
 	bidf = pd.read_pickle("data/nfdrs.pkl")
+	firedf = pd.read_pickle("data/firedata.pkl")
 
 	return firedf, bidf
 
